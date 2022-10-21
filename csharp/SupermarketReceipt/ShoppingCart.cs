@@ -70,6 +70,8 @@ namespace SupermarketReceipt
                 {
                     case SpecialOfferType.ThreeForTwo when quantityAsInt > 2:
                         var discountAmount = quantity * unitPrice - (offerTimesApplied * 2 * unitPrice + quantityAsInt % 3 * unitPrice);
+                        var offerTimesApplied = quantityAsInt / offerQuantity;
+                                             (offerTimesApplied * 2 * unitPrice + quantityAsInt % 3 * unitPrice);
                         discount = new Discount(p, "3 for 2", -discountAmount);
                         break;
 
@@ -79,7 +81,8 @@ namespace SupermarketReceipt
 
                     case SpecialOfferType.FiveForAmount when quantityAsInt >= 5:
                         var discountTotal = unitPrice * quantity - (offer.Argument * offerTimesApplied + quantityAsInt % 5 * unitPrice);
-                        discount = new Discount(p, x + " for " + offer.Argument, -discountTotal);
+                        var offerTimesApplied = quantityAsInt / offerQuantity;
+                                            (offer.Argument * offerTimesApplied + quantityAsInt % 5 * unitPrice);
                         break;
                 }
 
