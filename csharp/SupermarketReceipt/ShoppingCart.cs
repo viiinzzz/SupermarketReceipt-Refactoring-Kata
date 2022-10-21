@@ -43,21 +43,13 @@ namespace SupermarketReceipt
                 var offer = offers[p];
                 var unitPrice = catalog.GetUnitPrice(p);
                 Discount discount = null;
-                var offerQuantity = 1;
-                switch (offer.OfferType)
+                var offerQuantity = offer.OfferType switch
                 {
-                    case SpecialOfferType.ThreeForTwo:
-                        offerQuantity = 3;
-                        break;
-
-                    case SpecialOfferType.TwoForAmount:
-                        offerQuantity = 2;
-                        break;
-
-                    case SpecialOfferType.FiveForAmount:
-                        offerQuantity = 5;
-                        break;
-                }
+                    SpecialOfferType.ThreeForTwo => 3,
+                    SpecialOfferType.TwoForAmount => 2,
+                    SpecialOfferType.FiveForAmount => 5,
+                    _ => 1
+                };
 
                 switch (offer.OfferType)
                 {
