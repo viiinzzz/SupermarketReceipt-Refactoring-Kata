@@ -65,18 +65,22 @@ namespace SupermarketReceipt
                         break;
                 }
 
-                var numberOfXs = quantityAsInt / x;
-                if (offer.OfferType == SpecialOfferType.ThreeForTwo && quantityAsInt > 2)
+                var offerTimesApplied = quantityAsInt / x;
+                switch (offer.OfferType)
                 {
-                    var discountAmount = quantity * unitPrice - (numberOfXs * 2 * unitPrice + quantityAsInt % 3 * unitPrice);
-                    discount = new Discount(p, "3 for 2", -discountAmount);
-                }
+                    case SpecialOfferType.ThreeForTwo when quantityAsInt > 2:
+                        var discountAmount = quantity * unitPrice - (offerTimesApplied * 2 * unitPrice + quantityAsInt % 3 * unitPrice);
+                        discount = new Discount(p, "3 for 2", -discountAmount);
+                        break;
 
-                if (offer.OfferType == SpecialOfferType.TenPercentDiscount) discount = new Discount(p, offer.Argument + "% off", -quantity * unitPrice * offer.Argument / 100.0);
-                if (offer.OfferType == SpecialOfferType.FiveForAmount && quantityAsInt >= 5)
-                {
-                    var discountTotal = unitPrice * quantity - (offer.Argument * numberOfXs + quantityAsInt % 5 * unitPrice);
-                    discount = new Discount(p, x + " for " + offer.Argument, -discountTotal);
+                    case SpecialOfferType.TenPercentDiscount:
+                        discount = new Discount(p, offer.Argument + "% off", -quantity * unitPrice * offer.Argument / 100.0);
+                        break;
+
+                    case SpecialOfferType.FiveForAmount when quantityAsInt >= 5:
+                        var discountTotal = unitPrice * quantity - (offer.Argument * offerTimesApplied + quantityAsInt % 5 * unitPrice);
+                        discount = new Discount(p, x + " for " + offer.Argument, -discountTotal);
+                        break;
                 }
 
                 if (discount != null)
