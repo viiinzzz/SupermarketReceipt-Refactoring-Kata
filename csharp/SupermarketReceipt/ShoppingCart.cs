@@ -43,15 +43,15 @@ namespace SupermarketReceipt
                 var offer = offers[p];
                 var unitPrice = catalog.GetUnitPrice(p);
                 Discount discount = null;
-                var x = 1;
+                var offerQuantity = 1;
                 switch (offer.OfferType)
                 {
                     case SpecialOfferType.ThreeForTwo:
-                        x = 3;
+                        offerQuantity = 3;
                         break;
 
                     case SpecialOfferType.TwoForAmount:
-                        x = 2;
+                        offerQuantity = 2;
                         if (quantityAsInt >= 2)
                         {
                             var total = offer.Argument * (quantityAsInt / x) + quantityAsInt % 2 * unitPrice;
@@ -61,7 +61,7 @@ namespace SupermarketReceipt
                         break;
 
                     case SpecialOfferType.FiveForAmount:
-                        x = 5;
+                        offerQuantity = 5;
                         break;
                 }
 
