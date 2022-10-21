@@ -52,12 +52,6 @@ namespace SupermarketReceipt
 
                     case SpecialOfferType.TwoForAmount:
                         offerQuantity = 2;
-                        if (quantityAsInt >= 2)
-                        {
-                            var total = offer.Argument * (quantityAsInt / x) + quantityAsInt % 2 * unitPrice;
-                            var discountN = unitPrice * quantity - total;
-                            discount = new Discount(p, "2 for " + offer.Argument, -discountN);
-                        }
                         break;
 
                     case SpecialOfferType.FiveForAmount:
@@ -65,25 +59,37 @@ namespace SupermarketReceipt
                         break;
                 }
 
-                var offerTimesApplied = quantityAsInt / x;
                 switch (offer.OfferType)
                 {
                     case SpecialOfferType.ThreeForTwo when quantityAsInt > 2:
-                        var discountAmount = quantity * unitPrice - (offerTimesApplied * 2 * unitPrice + quantityAsInt % 3 * unitPrice);
+                    {
                         var offerTimesApplied = quantityAsInt / offerQuantity;
+                        var discountAmount = quantity * unitPrice -
                                              (offerTimesApplied * 2 * unitPrice + quantityAsInt % 3 * unitPrice);
                         discount = new Discount(p, "3 for 2", -discountAmount);
                         break;
-
+                    }
                     case SpecialOfferType.TenPercentDiscount:
                         discount = new Discount(p, offer.Argument + "% off", -quantity * unitPrice * offer.Argument / 100.0);
                         break;
 
-                    case SpecialOfferType.FiveForAmount when quantityAsInt >= 5:
-                        var discountTotal = unitPrice * quantity - (offer.Argument * offerTimesApplied + quantityAsInt % 5 * unitPrice);
-                        var offerTimesApplied = quantityAsInt / offerQuantity;
-                                            (offer.Argument * offerTimesApplied + quantityAsInt % 5 * unitPrice);
+                    case SpecialOfferType.TwoForAmount:
+                        if (quantityAsInt >= 2)
+                        {
+                            var total = offer.Argument * (quantityAsInt / offerQuantity) + quantityAsInt % 2 * unitPrice;
+                            var discountN = unitPrice * quantity - total;
+                            discount = new Discount(p, "2 for " + offer.Argument, -discountN);
+                        }
                         break;
+
+                    case SpecialOfferType.FiveForAmount when quantityAsInt >= 5:
+                    {
+                        var offerTimesApplied = quantityAsInt / offerQuantity;
+                        var discountTotal = unitPrice * quantity -
+                                            (offer.Argument * offerTimesApplied + quantityAsInt % 5 * unitPrice);
+                        discount = new Discount(p, offerQuantity + " for " + offer.Argument, -discountTotal);
+                        break;
+                    }
                 }
 
                 if (discount != null)
