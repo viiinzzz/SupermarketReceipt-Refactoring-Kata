@@ -3,9 +3,9 @@ namespace SupermarketReceipt
     public enum SpecialOfferType
     {
         ThreeForTwo,
-        TenPercentDiscount,
         TwoForAmount,
-        FiveForAmount
+        FiveForAmount,
+        PercentDiscount,
     }
 
     public class Offer

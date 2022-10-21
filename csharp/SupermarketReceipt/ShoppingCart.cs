@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace SupermarketReceipt
 {
@@ -8,15 +10,9 @@ namespace SupermarketReceipt
         private readonly Dictionary<Product, double> _productQuantities = new Dictionary<Product, double>();
 
 
-        public List<ProductQuantity> GetItems()
-        {
-            return new List<ProductQuantity>(_items);
-        }
+        public List<ProductQuantity> GetItems() => new List<ProductQuantity>(_items);
 
-        public void AddItem(Product product)
-        {
-            AddItemQuantity(product, 1.0);
-        }
+        public void AddItem(Product product) => AddItemQuantity(product, 1.0);
 
 
         public void AddItemQuantity(Product product, double quantity)
@@ -35,58 +31,99 @@ namespace SupermarketReceipt
 
         public void HandleOffers(Receipt receipt, Dictionary<Product, Offer> offers, SupermarketCatalog catalog)
         {
-            foreach (var (p, quantity) in _productQuantities)
+            foreach (var (product, quantity) in _productQuantities)
             {
-                var quantityAsInt = (int) quantity;
-                if (!offers.ContainsKey(p)) continue;
+                if (!offers.TryGetValue(product, out var offer)) continue;
 
-                var offer = offers[p];
-                var unitPrice = catalog.GetUnitPrice(p);
-                Discount discount = null;
-                var offerQuantity = offer.OfferType switch
+                var unitPrice = catalog.GetUnitPrice(product);
+
+                var isPercentOffer = offer.OfferType == SpecialOfferType.PercentDiscount;
+                if (isPercentOffer)
                 {
-                    SpecialOfferType.ThreeForTwo => 3,
-                    SpecialOfferType.TwoForAmount => 2,
-                    SpecialOfferType.FiveForAmount => 5,
-                    _ => 1
-                };
-
-                switch (offer.OfferType)
-                {
-                    case SpecialOfferType.ThreeForTwo when quantityAsInt > 2:
-                    {
-                        var offerTimesApplied = quantityAsInt / offerQuantity;
-                        var discountAmount = quantity * unitPrice -
-                                             (offerTimesApplied * 2 * unitPrice + quantityAsInt % 3 * unitPrice);
-                        discount = new Discount(p, "3 for 2", -discountAmount);
-                        break;
-                    }
-                    case SpecialOfferType.TenPercentDiscount:
-                        discount = new Discount(p, offer.Argument + "% off", -quantity * unitPrice * offer.Argument / 100.0);
-                        break;
-
-                    case SpecialOfferType.TwoForAmount:
-                        if (quantityAsInt >= 2)
-                        {
-                            var total = offer.Argument * (quantityAsInt / offerQuantity) + quantityAsInt % 2 * unitPrice;
-                            var discountN = unitPrice * quantity - total;
-                            discount = new Discount(p, "2 for " + offer.Argument, -discountN);
-                        }
-                        break;
-
-                    case SpecialOfferType.FiveForAmount when quantityAsInt >= 5:
-                    {
-                        var offerTimesApplied = quantityAsInt / offerQuantity;
-                        var discountTotal = unitPrice * quantity -
-                                            (offer.Argument * offerTimesApplied + quantityAsInt % 5 * unitPrice);
-                        discount = new Discount(p, offerQuantity + " for " + offer.Argument, -discountTotal);
-                        break;
-                    }
+                    var(description, discountAmount) = getDiscountPercent(
+                        quantity, unitPrice, offer.Argument);
+                    receipt.AddDiscount(new Discount(product, description, discountAmount));
+                    continue;
                 }
 
-                if (discount != null)
-                    receipt.AddDiscount(discount);
+                var (offerQuantity, paidQuantity) = offer.OfferType switch
+                {
+                    SpecialOfferType.TwoForAmount => (2, 0),
+                    SpecialOfferType.FiveForAmount => (5, 0),
+                    SpecialOfferType.ThreeForTwo => (3, 2),
+                    _ => throw new Exception("unsupported offer")
+                };
+
+                var quantityAsInt = (int)quantity;
+                var offerTimesApplied = quantityAsInt / offerQuantity;
+
+                if (offerTimesApplied <= 0) continue;
+
+                var isAmountOffer = offerQuantity > 0 && paidQuantity == 0;
+                var isQuantityOffer = paidQuantity > 0 && paidQuantity > 0;
+                if (!(isAmountOffer || isQuantityOffer)) continue;
+
+                {
+                    var (description, discountAmount) = getDiscountQuantity(
+                        quantity, quantityAsInt, 
+                        unitPrice, offer.Argument,
+                        offerQuantity, paidQuantity, offerTimesApplied,
+                        isQuantityOffer, isAmountOffer);
+                    receipt.AddDiscount(new Discount(product, description, discountAmount));
+                    continue;
+                }
             }
+        }
+
+        private static (string description, double discountAmount) getDiscountPercent(
+            double quantity,
+            double unitPrice,
+            double offerArgument
+            )
+        {
+            var catalogPrice = quantity * unitPrice;
+            var offerPercent = offerArgument / 100.0;
+            var discountAmount = -(catalogPrice * offerPercent);
+            var description = offerArgument + "% off";
+            return (description, discountAmount);
+        }
+
+        private static (string description, double discountAmount) getDiscountQuantity(
+            double quantity,
+            int quantityAsInt,
+            double unitPrice,
+            double offerArgument,
+
+            int offerQuantity,
+            int paidQuantity,
+            int offerTimesApplied,
+
+            bool isQuantityOffer,
+            bool isAmountOffer
+            )
+        {
+            var noDiscountQuantity = quantityAsInt % offerQuantity;
+            var noDiscountPrice = noDiscountQuantity * unitPrice;
+            var catalogPrice = quantity * unitPrice;
+
+            double offerPrice;
+            string description;
+            if (isQuantityOffer)
+            {
+                offerPrice = paidQuantity * unitPrice;
+                description = offerQuantity + " for " + paidQuantity;
+            }
+            else if (isAmountOffer)
+            {
+                offerPrice = offerArgument;
+                description = offerQuantity + " for " + offerArgument;
+            }
+            else throw new Exception();
+
+            var discountPrice = offerTimesApplied * offerPrice;
+            var totalPrice = discountPrice + noDiscountPrice;
+            var discountAmount = -(catalogPrice - totalPrice);
+            return (description, discountAmount);
         }
     }
 }

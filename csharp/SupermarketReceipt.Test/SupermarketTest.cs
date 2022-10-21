@@ -93,7 +93,7 @@ namespace SupermarketReceipt.Test
         public Task percent_discount()
         {
             _theCart.AddItem(_rice);
-            _teller.AddSpecialOffer(SpecialOfferType.TenPercentDiscount, _rice, 10.0);
+            _teller.AddSpecialOffer(SpecialOfferType.PercentDiscount, _rice, 10.0);
             Receipt receipt = _teller.ChecksOutArticlesFrom(_theCart);
             return Verifier.Verify(new ReceiptPrinter(40).PrintReceipt(receipt));
         }
