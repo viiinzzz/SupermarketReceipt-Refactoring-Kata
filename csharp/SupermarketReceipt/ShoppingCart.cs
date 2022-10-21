@@ -39,18 +39,19 @@ namespace SupermarketReceipt
             {
                 var quantity = _productQuantities[p];
                 var quantityAsInt = (int) quantity;
-                if (offers.ContainsKey(p))
+                if (!offers.ContainsKey(p)) continue;
                 {
                     var offer = offers[p];
                     var unitPrice = catalog.GetUnitPrice(p);
                     Discount discount = null;
                     var x = 1;
-                    if (offer.OfferType == SpecialOfferType.ThreeForTwo)
+                switch (offer.OfferType)
                     {
+                    case SpecialOfferType.ThreeForTwo:
                         x = 3;
-                    }
-                    else if (offer.OfferType == SpecialOfferType.TwoForAmount)
-                    {
+                        break;
+
+                    case SpecialOfferType.TwoForAmount:
                         x = 2;
                         if (quantityAsInt >= 2)
                         {
@@ -58,6 +59,11 @@ namespace SupermarketReceipt
                             var discountN = unitPrice * quantity - total;
                             discount = new Discount(p, "2 for " + offer.Argument, -discountN);
                         }
+                        break;
+
+                    case SpecialOfferType.FiveForAmount:
+                        x = 5;
+                        break;
                     }
 
                     if (offer.OfferType == SpecialOfferType.FiveForAmount) x = 5;
