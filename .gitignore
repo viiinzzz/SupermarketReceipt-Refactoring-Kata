@@ -8,3 +8,7 @@ out/
 build/
 .gradle/
 .DS_Store
+/.vs
+/csharp/_NCrunch_SupermarketReceipt
+*.ncrunchsolution
+*.ncrunchsolution.user
