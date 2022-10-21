@@ -35,7 +35,7 @@ namespace SupermarketReceipt
 
         public void HandleOffers(Receipt receipt, Dictionary<Product, Offer> offers, SupermarketCatalog catalog)
         {
-            foreach (var p in _productQuantities.Keys)
+            foreach ((var p, var quantity) in _productQuantities)
             {
                 var quantity = _productQuantities[p];
                 var quantityAsInt = (int) quantity;
