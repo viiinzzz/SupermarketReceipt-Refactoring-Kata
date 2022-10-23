@@ -1,9 +1,11 @@
 
 using System.Threading.Tasks;
+using Supermarket.Finance;
+using Supermarket.Inventory;
 using VerifyXunit;
 using Xunit;
 
-namespace SupermarketReceipt.Test
+namespace Supermarket.Test
 {
     [UsesVerify]
     public class ReceiptPrinterTest

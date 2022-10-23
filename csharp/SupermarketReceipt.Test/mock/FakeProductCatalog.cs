@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using Supermarket.Inventory;
 
-namespace SupermarketReceipt
+namespace Supermarket.Test.Inventory
 {
-    public class FakeCatalog : SupermarketCatalog
+    public class FakeProductCatalog : ProductCatalog
     {
         private readonly IDictionary<string, double> _prices = new Dictionary<string, double>();
         private readonly IDictionary<string, Product> _products = new Dictionary<string, Product>();
