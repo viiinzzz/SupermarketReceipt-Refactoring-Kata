@@ -10,5 +10,7 @@ build/
 .DS_Store
 /.vs
 /csharp/_NCrunch_SupermarketReceipt
-*.ncrunchsolution
-*.ncrunchsolution.user
+**/*.ncrunchsolution
+**/*.ncrunchsolution.user
+**/*.ncrunchproject
+**/*.ncrunchproject.user
