@@ -1,3 +1,7 @@
+I worked in the 'with_tests' branch 😓
+...bundle offer discount to be investigated for complex cases 🤪🔫
+
+
 # The Supermarket Receipt Refactoring Kata
 
 This is a variation of a popular kata described in http://codekata.com/kata/kata01-supermarket-pricing/. The aim of the exercise is to build automated tests for this code, refactor it, and add a new feature. 
