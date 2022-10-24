@@ -23,7 +23,7 @@ public class ProductsBundle
 
     public bool HasProduct(Product product) => _items.Any(bundleItem => bundleItem.product.Equals(product));
 
-    public List<ProductQuantity> ApplyToProductQuantities(Dictionary<Product, double> productQuantities)
+    public List<ProductQuantity> Apply(Dictionary<Product, double> productQuantities)
     {
         var productBundles = _items
             .Select(bundleItem => (

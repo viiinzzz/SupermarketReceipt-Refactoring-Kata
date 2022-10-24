@@ -15,7 +15,7 @@ public class SpecialOffers
 
     public SpecialOffer GetSingleProductOffer(Product product)
         => _singleProductOffers.ContainsKey(product) ? _singleProductOffers[product] : null;
-    public IEnumerable<SpecialOffer> GetProductsBundleOffers
+    public IEnumerable<SpecialOffer> GetProductsBundleOffers()
         => _productsBundleOffers.ToArray();
 
     public void AddSpecialOffer(

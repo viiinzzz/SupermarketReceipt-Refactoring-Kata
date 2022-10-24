@@ -1,4 +1,5 @@
 using Supermarket.Inventory;
+using System.Collections.Generic;
 
 namespace Supermarket.Marketing;
 
@@ -25,4 +26,7 @@ public class SpecialOffer
 
     public SpecialOfferType OfferType { get; }
     public double Argument { get; }
+
+    public List<ProductQuantity> ApplyBundle(Dictionary<Product, double> productQuantities)
+        => _bundle?.Apply(productQuantities);
 }

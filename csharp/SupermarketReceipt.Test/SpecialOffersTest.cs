@@ -3,8 +3,6 @@ using System.Threading.Tasks;
 using VerifyXunit;
 using Xunit;
 using NFluent;
-
-using Supermarket.Finance;
 using Supermarket.Inventory;
 using Supermarket.Logistics;
 using Supermarket.Marketing;
@@ -29,8 +27,8 @@ public static class StringExtensions
     public static string lf1(this string text) => ButFirstEmptyLine(text);
 }
 
-[UsesVerify]
-public class SupermarketTest
+// [UsesVerify]
+public class SpecialOffersTest
 {
     private readonly Product _toothbrush, _toothpaste, _rice, _apples, _cherryTomatoes;
     private readonly ProductCatalog _catalog;
@@ -38,7 +36,7 @@ public class SupermarketTest
     private readonly Cart _cart;
     
 
-    public SupermarketTest()
+    public SpecialOffersTest()
     {
         _catalog = new FakeProductCatalog();
         _offers = new SpecialOffers(_catalog);
@@ -58,7 +56,7 @@ public class SupermarketTest
 
     }
 
-    private readonly ReceiptPrinter _receiptPrinter = new(40);
+    private readonly TextReceiptPrinter _receiptPrinter = new(40);
 
     /*
      * snapshot location
@@ -160,7 +158,7 @@ Total:                              3.96
     [Fact]
     public async void T006__loose_weight_product()
     {
-        _cart.AddItemQuantity(_apples, .5);
+        _cart.AddItem(_apples, .5);
 
         // await VerifyReceiptWithSnapshot;
         Check.That(receipt.lf()).IsEqualTo(@"
@@ -208,7 +206,7 @@ Total:                              0.99
     [Fact]
     public async void T009__FiveForY_discount()
     {
-        _cart.AddItemQuantity(_apples, 5);
+        _cart.AddItem(_apples, 5);
 
         _offers.AddSpecialOffer(SpecialOfferType.FiveForAmount, _apples, 6.99);
 
@@ -225,7 +223,7 @@ Total:                              6.99
     [Fact]
     public void T010__FiveForY_discount_withSix()
     {
-        _cart.AddItemQuantity(_apples, 6);
+        _cart.AddItem(_apples, 6);
 
         _offers.AddSpecialOffer(SpecialOfferType.FiveForAmount, _apples, 6.99);
 
@@ -242,7 +240,7 @@ Total:                              8.98
     [Fact]
     public async void T011__FiveForY_discount_withSixteen()
     {
-        _cart.AddItemQuantity(_apples, 16);
+        _cart.AddItem(_apples, 16);
 
         _offers.AddSpecialOffer(SpecialOfferType.FiveForAmount, _apples, 6.99);
 
@@ -259,7 +257,7 @@ Total:                             22.96
     [Fact]
     public async void T012__FiveForY_discount_withFour()
     {
-        _cart.AddItemQuantity(_apples, 4);
+        _cart.AddItem(_apples, 4);
 
         _offers.AddSpecialOffer(SpecialOfferType.FiveForAmount, _apples, 6.99);
 
@@ -275,23 +273,25 @@ Total:                              7.96
     [Fact]
     public async void T013__nobundle_discount()
     {
-        _cart.AddItem(_toothbrush);
-        _cart.AddItem(_toothpaste);
+        _cart.AddItem(_toothbrush, 10);
+        _cart.AddItem(_toothpaste, 10);
         
         // await VerifyReceiptWithSnapshot;
         Check.That(receipt.lf()).IsEqualTo(@"
-toothbrush                          0.99
-toothpaste                          1.79
+toothbrush                          9.90
+  0.99 * 10
+toothpaste                         17.90
+  1.79 * 10
 
-Total:                              2.78
+Total:                             27.80
 ".lf1());
     }
 
     [Fact]
     public async void T014__bundle_discount()
     {
-        _cart.AddItem(_toothbrush);
-        _cart.AddItem(_toothpaste);
+        _cart.AddItem(_toothbrush, 10);
+        _cart.AddItem(_toothpaste, 10);
 
         var bundle = new[]
         {
@@ -302,11 +302,77 @@ Total:                              2.78
 
         // await VerifyReceiptWithSnapshot;
         Check.That(receipt.lf()).IsEqualTo(@"
-toothbrush                          0.99
-toothpaste                          1.79
-10% off(bundle)                    -0.28
+toothbrush                          9.90
+  0.99 * 10
+toothpaste                         17.90
+  1.79 * 10
+10% off bundle(toothbrush)         -0.99
+10% off bundle(toothpaste)         -1.79
 
-Total:                              2.50
+Total:                             25.02
+".lf1());
+    }
+
+    [Fact]
+    public async void T015__bundle_discount()
+    {
+        _cart.AddItem(_toothbrush, 10);
+        _cart.AddItem(_toothpaste, 11);
+
+        var bundle = new[]
+        {
+            (_toothbrush, 1),
+            (_toothpaste, 1)
+        };
+        _offers.AddSpecialOffer(SpecialOfferType.PercentDiscount, bundle, 10);
+
+        // await VerifyReceiptWithSnapshot;
+        Check.That(receipt.lf()).IsEqualTo(@"
+toothbrush                          9.90
+  0.99 * 10
+toothpaste                         19.69
+  1.79 * 11
+10% off bundle(toothbrush)         -0.99
+10% off bundle(toothpaste)         -1.79
+
+Total:                             26.81xxxxx
+".lf1());
+    }
+
+    //TODO: found bundle offers should be prioritized most attractive first
+    [Fact]
+    public async void T016__bundle_discount()
+    {
+        _cart.AddItem(_toothbrush, 10);
+        _cart.AddItem(_toothpaste, 15);
+        _cart.AddItem(_rice, 5);
+
+        var bundle = new[]
+        {
+            (_toothbrush, 1),
+            (_toothpaste, 1)
+        };
+        _offers.AddSpecialOffer(SpecialOfferType.PercentDiscount, bundle, 10);
+
+        var bundle2 = new[]
+        {
+            (_toothbrush, 1),
+            (_rice, 1)
+        };
+        _offers.AddSpecialOffer(SpecialOfferType.PercentDiscount, bundle2, 50);
+
+        // await VerifyReceiptWithSnapshot;
+        Check.That(receipt.lf()).IsEqualTo(@"
+toothbrush                          9.90
+  0.99 * 10
+toothpaste                         26.85
+  1.79 * 15
+rice                               14.95
+  2.99 * 5
+10% off bundle(toothbrush)         -0.99
+10% off bundle(toothpaste)         -2.69
+
+Total:                             48.03xxxxx
 ".lf1());
     }
 }

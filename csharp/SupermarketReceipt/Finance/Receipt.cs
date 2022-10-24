@@ -31,61 +31,84 @@ public class Receipt
 
     public void HandleOffers(SpecialOffers offers, ProductCatalog catalog, Cart cart)
     {
+        foreach (var offer in offers.GetProductsBundleOffers())
+        {
+            var bundle = offer.ApplyBundle(cart.GetMap());
+            if (bundle == null) continue;
+            foreach (var item in bundle)
+            {
+                var unitPrice = catalog.GetUnitPrice(item.product);
+                AddDiscount(item.product, item.weight, unitPrice, offer, true);
+                cart.RemoveItem(item.product, item.weight);
+            }
+        }
+
         foreach (var (product, quantity) in cart.GetMap())
         {
-            var offer = offers.GetSingleProductOffer(product);
-            if (offer == null) continue;
-
             var unitPrice = catalog.GetUnitPrice(product);
+            AddDiscount(product, quantity, unitPrice, offers);
+        }
+    }
 
-            var isPercentOffer = offer.OfferType == SpecialOfferType.PercentDiscount;
-            if (isPercentOffer)
-            {
-                var (description, discountAmount) = getDiscountPercent(
-                    quantity, unitPrice, offer.Argument);
-                this.AddDiscount(new Discount(product, description, discountAmount));
-                continue;
-            }
+    private void AddDiscount(Product product, double quantity, double unitPrice, SpecialOffers offers)
+    {
+        var offer = offers.GetSingleProductOffer(product);
+        if (offer == null) return;
+        AddDiscount(product, quantity, unitPrice, offer, false);
+    }
 
-            var (offerQuantity, paidQuantity) = offer.OfferType switch
-            {
-                SpecialOfferType.TwoForAmount => (2, 0),
-                SpecialOfferType.FiveForAmount => (5, 0),
-                SpecialOfferType.ThreeForTwo => (3, 2),
-                _ => throw new Exception("unsupported offer")
-            };
+    private void AddDiscount(Product product, double quantity, double unitPrice, SpecialOffer offer, bool bundle)
+    {
+        var isPercentOffer = offer.OfferType == SpecialOfferType.PercentDiscount;
+        if (isPercentOffer)
+        {
+            var (description, discountAmount) = getDiscountPercent(
+                quantity, unitPrice, offer.Argument, bundle);
+            this.AddDiscount(new Discount(product, description, discountAmount));
+            return;
+        }
 
-            var quantityAsInt = (int)quantity;
-            var offerTimesApplied = quantityAsInt / offerQuantity;
+        var (offerQuantity, paidQuantity) = offer.OfferType switch
+        {
+            SpecialOfferType.TwoForAmount => (2, 0),
+            SpecialOfferType.FiveForAmount => (5, 0),
+            SpecialOfferType.ThreeForTwo => (3, 2),
+            _ => throw new Exception("unsupported offer")
+        };
 
-            if (offerTimesApplied <= 0) continue;
+        var quantityAsInt = (int)quantity;
+        var offerTimesApplied = quantityAsInt / offerQuantity;
 
-            var isAmountOffer = offerQuantity > 0 && paidQuantity == 0;
-            var isQuantityOffer = paidQuantity > 0 && paidQuantity > 0;
-            if (!(isAmountOffer || isQuantityOffer)) continue;
+        if (offerTimesApplied <= 0) return;
 
-            {
-                var (description, discountAmount) = getDiscountQuantity(
-                    quantity, quantityAsInt,
-                    unitPrice, offer.Argument,
-                    offerQuantity, paidQuantity, offerTimesApplied,
-                    isQuantityOffer, isAmountOffer);
-                this.AddDiscount(new Discount(product, description, discountAmount));
-                continue;
-            }
+        var isAmountOffer = offerQuantity > 0 && paidQuantity == 0;
+        var isQuantityOffer = paidQuantity > 0 && paidQuantity > 0;
+        if (!(isAmountOffer || isQuantityOffer)) return;
+
+        {
+            var (description, discountAmount) = getDiscountQuantity(
+                quantity, quantityAsInt,
+                unitPrice, offer.Argument,
+                offerQuantity, paidQuantity, offerTimesApplied,
+                isQuantityOffer, isAmountOffer,
+                bundle);
+            this.AddDiscount(new Discount(product, description, discountAmount));
+            return;
         }
     }
 
     private static (string description, double discountAmount) getDiscountPercent(
         double quantity,
         double unitPrice,
-        double offerArgument
+        double offerArgument,
+
+        bool bundle
     )
     {
         var catalogPrice = quantity * unitPrice;
         var offerPercent = offerArgument / 100.0;
         var discountAmount = -(catalogPrice * offerPercent);
-        var description = offerArgument + "% off";
+        var description = offerArgument + "% off" + (bundle ? " bundle" : "");
         return (description, discountAmount);
     }
 
@@ -100,7 +123,9 @@ public class Receipt
         int offerTimesApplied,
 
         bool isQuantityOffer,
-        bool isAmountOffer
+        bool isAmountOffer,
+
+        bool bundle
     )
     {
         var noDiscountQuantity = quantityAsInt % offerQuantity;
@@ -112,12 +137,12 @@ public class Receipt
         if (isQuantityOffer)
         {
             offerPrice = paidQuantity * unitPrice;
-            description = offerQuantity + " for " + paidQuantity;
+            description = offerQuantity + " for " + paidQuantity + (bundle ? " bundle" : "");
         }
         else if (isAmountOffer)
         {
             offerPrice = offerArgument;
-            description = offerQuantity + " for " + offerArgument;
+            description = offerQuantity + " for " + offerArgument + (bundle ? " bundle" : "");
         }
         else throw new Exception();
 

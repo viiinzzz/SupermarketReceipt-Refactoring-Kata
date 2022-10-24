@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using Supermarket.Finance;
@@ -13,37 +14,32 @@ public class Cart
 
     public ProductQuantity[] GetItems() => _items.ToArray();
     public Dictionary<Product, double> GetMap() => new(_productQuantities);
+    
 
-    public void AddItem(Product product) => AddItemQuantity(product, 1.0);
-
-
-    public void AddItemQuantity(Product product, double quantity)
+    public void AddItem(Product product, double quantity = 1.0)
     {
         _items.Add(new ProductQuantity(product, quantity));
         if (_productQuantities.ContainsKey(product))
-        {
-            var newAmount = _productQuantities[product] + quantity;
-            _productQuantities[product] = newAmount;
-        }
-        else
-        {
-            _productQuantities.Add(product, quantity);
-        }
+            _productQuantities[product] += quantity;
+        else _productQuantities.Add(product, quantity);
+    }
+
+    public void RemoveItem(Product product, double quantity = 1.0)
+    {
+        if (_productQuantities.ContainsKey(product))
+            _productQuantities[product] -= quantity;
+        else throw new Exception("cannot remove quantity: not enough available");
     }
 
     public Receipt ChecksOutArticlesFrom(SpecialOffers specialOffers)
     {
         var receipt = new Receipt();
-        var productQuantities = GetItems();
-        foreach (var pq in productQuantities)
+        foreach (var (product, quantity) in _items)
         {
-            var p = pq.Product;
-            var quantity = pq.Quantity;
-
-            var unitPrice = specialOffers.Catalog.GetUnitPrice(p);
+            var unitPrice = specialOffers.Catalog.GetUnitPrice(product);
             var price = quantity * unitPrice;
 
-            receipt.AddProduct(p, quantity, unitPrice, price);
+            receipt.AddProduct(product, quantity, unitPrice, price);
         }
 
         receipt.HandleOffers(specialOffers, specialOffers.Catalog, this);

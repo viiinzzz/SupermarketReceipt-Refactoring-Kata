@@ -22,4 +22,109 @@
     <ProjectReference Include="..\SupermarketReceipt\SupermarketReceipt.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="print\PrinterTest.discounts.verified.txt">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <DependentUpon>PrinterTest.cs</DependentUpon>
+    </None>
+    <None Update="print\PrinterTest.looseWeight.verified.txt">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <DependentUpon>PrinterTest.cs</DependentUpon>
+    </None>
+    <None Update="print\PrinterTest.oneLineItem.verified.txt">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <DependentUpon>PrinterTest.cs</DependentUpon>
+    </None>
+    <None Update="print\PrinterTest.printWholeReceipt.verified.txt">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <DependentUpon>PrinterTest.cs</DependentUpon>
+    </None>
+    <None Update="print\PrinterTest.quantityTwo.verified.txt">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <DependentUpon>PrinterTest.cs</DependentUpon>
+    </None>
+    <None Update="print\PrinterTest.total.verified.txt">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <DependentUpon>PrinterTest.cs</DependentUpon>
+    </None>
+    <None Update="print\HtmlPrinterTest.discounts.verified.txt">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <DependentUpon>HtmlPrinterTest.cs</DependentUpon>
+    </None>
+    <None Update="print\HtmlPrinterTest.looseWeight.verified.txt">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <DependentUpon>HtmlPrinterTest.cs</DependentUpon>
+    </None>
+    <None Update="print\HtmlPrinterTest.oneLineItem.verified.txt">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <DependentUpon>HtmlPrinterTest.cs</DependentUpon>
+    </None>
+    <None Update="print\HtmlPrinterTest.printWholeReceipt.verified.txt">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <DependentUpon>HtmlPrinterTest.cs</DependentUpon>
+    </None>
+    <None Update="print\HtmlPrinterTest.quantityTwo.verified.txt">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <DependentUpon>HtmlPrinterTest.cs</DependentUpon>
+    </None>
+    <None Update="print\HtmlPrinterTest.total.verified.txt">
+      <ParentFile>$([System.String]::Copy('%(FileName)').Split('.')[0])</ParentFile>
+      <DependentUpon>HtmlPrinterTest.cs</DependentUpon>
+    </None>
+    <None Update="print\TextPrinterTest.total.verified.txt">
+      <DependentUpon>TextPrinterTest.cs</DependentUpon>
+    </None>
+    <None Update="print\TextPrinterTest.quantityTwo.verified.txt">
+      <DependentUpon>TextPrinterTest.cs</DependentUpon>
+    </None>
+    <None Update="print\TextPrinterTest.printWholeReceipt.verified.txt">
+      <DependentUpon>TextPrinterTest.cs</DependentUpon>
+    </None>
+    <None Update="print\TextPrinterTest.oneLineItem.verified.txt">
+      <DependentUpon>TextPrinterTest.cs</DependentUpon>
+    </None>
+    <None Update="print\TextPrinterTest.looseWeight.verified.txt">
+      <DependentUpon>TextPrinterTest.cs</DependentUpon>
+    </None>
+    <None Update="print\TextPrinterTest.discounts.verified.txt">
+      <DependentUpon>TextPrinterTest.cs</DependentUpon>
+    </None>
+    <None Update="SpecialOffersTest.an_empty_shopping_cart_should_cost_nothing.verified.txt">
+      <DependentUpon>SpecialOffersTest.cs</DependentUpon>
+    </None>
+    <None Update="SpecialOffersTest.buy_five_get_one_free.verified.txt">
+      <DependentUpon>SpecialOffersTest.cs</DependentUpon>
+    </None>
+    <None Update="SpecialOffersTest.buy_two_get_one_free.verified.txt">
+      <DependentUpon>SpecialOffersTest.cs</DependentUpon>
+    </None>
+    <None Update="SpecialOffersTest.FiveForY_discount.verified.txt">
+      <DependentUpon>SpecialOffersTest.cs</DependentUpon>
+    </None>
+    <None Update="SpecialOffersTest.FiveForY_discount_withFour.verified.txt">
+      <DependentUpon>SpecialOffersTest.cs</DependentUpon>
+    </None>
+    <None Update="SpecialOffersTest.FiveForY_discount_withSix.verified.txt">
+      <DependentUpon>SpecialOffersTest.cs</DependentUpon>
+    </None>
+    <None Update="SpecialOffersTest.FiveForY_discount_withSixteen.verified.txt">
+      <DependentUpon>SpecialOffersTest.cs</DependentUpon>
+    </None>
+    <None Update="SpecialOffersTest.loose_weight_product.verified.txt">
+      <DependentUpon>SpecialOffersTest.cs</DependentUpon>
+    </None>
+    <None Update="SpecialOffersTest.one_normal_item.verified.txt">
+      <DependentUpon>SpecialOffersTest.cs</DependentUpon>
+    </None>
+    <None Update="SpecialOffersTest.percent_discount.verified.txt">
+      <DependentUpon>SpecialOffersTest.cs</DependentUpon>
+    </None>
+    <None Update="SpecialOffersTest.two_normal_items.verified.txt">
+      <DependentUpon>SpecialOffersTest.cs</DependentUpon>
+    </None>
+    <None Update="SpecialOffersTest.xForY_discount.verified.txt">
+      <DependentUpon>SpecialOffersTest.cs</DependentUpon>
+    </None>
+  </ItemGroup>
+
 </Project>
