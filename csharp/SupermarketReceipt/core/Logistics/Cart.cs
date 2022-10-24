@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 
-using Supermarket.Finance;
-using Supermarket.Inventory;
-using Supermarket.Marketing;
+using Supermarket.Core.Finance;
+using Supermarket.Core.Inventory;
+using Supermarket.Core.Marketing;
 
-namespace Supermarket.Logistics;
+namespace Supermarket.Core.Logistics;
 
 public class Cart
 {

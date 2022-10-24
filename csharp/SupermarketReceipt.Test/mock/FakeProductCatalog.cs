@@ -1,7 +1,8 @@
 using System.Collections.Generic;
-using Supermarket.Inventory;
 
-namespace Supermarket.Test.Inventory
+using Supermarket.Core.Inventory;
+
+namespace Supermarket.Test.mock
 {
     public class FakeProductCatalog : ProductCatalog
     {

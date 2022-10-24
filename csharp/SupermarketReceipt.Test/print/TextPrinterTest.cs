@@ -1,11 +1,9 @@
 using VerifyXunit;
 
-using Supermarket.Logistics;
-
-namespace SupermarketReceipt.Test.print;
+namespace Supermarket.Test.print;
 
 [UsesVerify]
 public class TextReceiptPrinterTest : PrinterTest
 {
-    public TextReceiptPrinterTest() : base(new TextReceiptPrinter()) { }
+    public TextReceiptPrinterTest() : base(new Supermarket.Specific.TextReceiptPrinter()) { }
 }

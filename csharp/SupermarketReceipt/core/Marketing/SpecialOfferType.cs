@@ -1,4 +1,4 @@
-namespace Supermarket.Marketing;
+namespace Supermarket.Core.Marketing;
 
 public enum SpecialOfferType
 {

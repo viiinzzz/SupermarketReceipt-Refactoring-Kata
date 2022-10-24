@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Supermarket.Inventory;
+namespace Supermarket.Core.Inventory;
 
 public class Product
 {

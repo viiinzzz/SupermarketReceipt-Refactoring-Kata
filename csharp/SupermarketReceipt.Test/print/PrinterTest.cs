@@ -2,11 +2,11 @@ using System.Threading.Tasks;
 using VerifyXunit;
 using Xunit;
 
-using Supermarket.Finance;
-using Supermarket.Inventory;
-using Supermarket.Logistics;
+using Supermarket.Core.Finance;
+using Supermarket.Core.Inventory;
+using Supermarket.Core.Logistics;
 
-namespace SupermarketReceipt.Test.print;
+namespace Supermarket.Test.print;
 
 public class PrinterTest
 {

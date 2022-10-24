@@ -1,9 +1,10 @@
 using System.Globalization;
 using System.Linq;
-using Supermarket.Finance;
-using Supermarket.Inventory;
+using Supermarket.Core.Finance;
+using Supermarket.Core.Inventory;
+using Supermarket.Core.Logistics;
 
-namespace Supermarket.Logistics;
+namespace Supermarket.Specific;
 
 public class HtmlReceiptPrinter : IReceiptPrinter
 {

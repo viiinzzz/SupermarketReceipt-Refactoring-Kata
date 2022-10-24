@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Supermarket.Inventory;
+using Supermarket.Core.Inventory;
 
-namespace Supermarket.Marketing;
+namespace Supermarket.Core.Marketing;
 
 public record class ProductsBundleItem(Product product, double quantity);
 

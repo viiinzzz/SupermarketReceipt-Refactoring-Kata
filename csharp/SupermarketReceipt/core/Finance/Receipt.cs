@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Supermarket.Inventory;
-using Supermarket.Logistics;
-using Supermarket.Marketing;
+using Supermarket.Core.Inventory;
+using Supermarket.Core.Logistics;
+using Supermarket.Core.Marketing;
 
-namespace Supermarket.Finance;
+namespace Supermarket.Core.Finance;
 
 public class Receipt
 {

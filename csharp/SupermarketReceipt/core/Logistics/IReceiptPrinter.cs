@@ -1,6 +1,6 @@
-using Supermarket.Finance;
+using Supermarket.Core.Finance;
 
-namespace Supermarket.Logistics;
+namespace Supermarket.Core.Logistics;
 
 public interface IReceiptPrinter
 {

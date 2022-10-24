@@ -1,11 +1,9 @@
 using VerifyXunit;
 
-using Supermarket.Logistics;
-
-namespace SupermarketReceipt.Test.print;
+namespace Supermarket.Test.print;
 
 [UsesVerify]
 public class HtmlReceiptPrinterTest : PrinterTest
 {
-    public HtmlReceiptPrinterTest() : base(new HtmlReceiptPrinter()) {}
+    public HtmlReceiptPrinterTest() : base(new Supermarket.Specific.HtmlReceiptPrinter()) {}
 }

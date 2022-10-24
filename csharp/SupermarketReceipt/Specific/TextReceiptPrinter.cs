@@ -1,9 +1,11 @@
 using System.Globalization;
 using System.Linq;
-using Supermarket.Finance;
-using Supermarket.Inventory;
 
-namespace Supermarket.Logistics;
+using Supermarket.Core.Finance;
+using Supermarket.Core.Inventory;
+using Supermarket.Core.Logistics;
+
+namespace Supermarket.Specific;
 
 public class TextReceiptPrinter : IReceiptPrinter
 {

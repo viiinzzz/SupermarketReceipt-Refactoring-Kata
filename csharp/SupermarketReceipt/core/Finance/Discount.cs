@@ -1,6 +1,6 @@
-using Supermarket.Inventory;
+using Supermarket.Core.Inventory;
 
-namespace Supermarket.Finance;
+namespace Supermarket.Core.Finance;
 
 public class Discount
 {

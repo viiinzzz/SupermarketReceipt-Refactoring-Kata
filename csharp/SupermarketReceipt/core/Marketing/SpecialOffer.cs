@@ -1,7 +1,7 @@
-using Supermarket.Inventory;
+using Supermarket.Core.Inventory;
 using System.Collections.Generic;
 
-namespace Supermarket.Marketing;
+namespace Supermarket.Core.Marketing;
 
 public class SpecialOffer
 {

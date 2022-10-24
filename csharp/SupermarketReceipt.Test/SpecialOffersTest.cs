@@ -3,10 +3,12 @@ using System.Threading.Tasks;
 using VerifyXunit;
 using Xunit;
 using NFluent;
-using Supermarket.Inventory;
-using Supermarket.Logistics;
-using Supermarket.Marketing;
-using Supermarket.Test.Inventory;
+
+using Supermarket.Core.Inventory;
+using Supermarket.Core.Logistics;
+using Supermarket.Core.Marketing;
+using Supermarket.Test.mock;
+using Supermarket.Specific;
 
 namespace Supermarket.Test;
 

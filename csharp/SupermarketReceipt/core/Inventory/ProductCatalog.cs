@@ -1,4 +1,4 @@
-namespace Supermarket.Inventory;
+namespace Supermarket.Core.Inventory;
 
 public interface ProductCatalog
 {
